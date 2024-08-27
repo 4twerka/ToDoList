@@ -4,6 +4,10 @@ function ToDoList() {
     const [InputValue, SetInputValue] = useState('');
     const [Items, SetItems] = useState([]);
 
+    const DeleteItem = (indexDelete) => {
+        SetItems(Items.filter((item, index) => index !== indexDelete));
+    }
+
     const ButtonAdd = () => {
         if (InputValue.trim()) {
             SetItems([...Items, InputValue]);
@@ -36,7 +40,7 @@ function ToDoList() {
                             <button className="text-green-400 hover:text-green-500 focus:outline-none">✅</button>
                             <span className="text-white">{item}</span>
                         </span>
-                        <button className="text-red-400 hover:text-red-500 focus:outline-none">🗑️</button>
+                        <button onClick={() => DeleteItem(index)} className="text-red-400 hover:text-red-500 focus:outline-none">🗑️</button>
                     </li>
                     </ul>
                 ))}
