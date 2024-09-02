@@ -3,8 +3,13 @@ import { useState } from "react";
 function ToDoList() {
   const [inputValue, setInputValue] = useState("");
   const [items, setItems] = useState([]);
-const [isEditing, setIsEditing] = useState(null);
+  const [isEditing, setIsEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
+  const [isActive, setIsActive] = useState(false);
+
+  const FollowChange = () => {
+
+  };
 
   const deleteItem = (indexDelete) => {
     setItems(items.filter((item, index) => index !== indexDelete));
@@ -78,6 +83,10 @@ const [isEditing, setIsEditing] = useState(null);
                 )}
               </span>
               <span className="flex space-x-3">
+                <button onClick={FollowChange}>
+                   ⭐
+                </button>
+
                 {isEditing === index ? (
                   <button
                     onClick={() => saveEdit(index)}
