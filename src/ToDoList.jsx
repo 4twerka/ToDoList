@@ -5,14 +5,30 @@ function ToDoList() {
   const [items, setItems] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
-  const [isActive, setIsActive] = useState(false);
+  const [animatedIndexes, setAnimatedIndexes] = useState([]); // Хранит индексы элементов, которые должны анимироваться
 
-  const FollowChange = () => {
+  const toggleAnimation = (index) => {
+    // Проверяем, есть ли уже элемент в массиве анимации
+    if (!animatedIndexes.includes(index)) {
+      setAnimatedIndexes((prev) => [...prev, index]); // Добавляем индекс в массив
+    }
+    moveItemsToTop(index);
+  };
 
+  const moveItemsToTop = () => {
+    // Создаем массив только из элементов, которые находятся в массиве animatedIndexes
+    const animatedItems = animatedIndexes.map((i) => items[i]);
+    // Создаем массив из остальных элементов, которые не анимируются
+    const nonAnimatedItems = items.filter(
+      (_, i) => !animatedIndexes.includes(i)
+    );
+    // Объединяем анимированные элементы (вверху) с не анимированными
+    setItems([...animatedItems, ...nonAnimatedItems]);
   };
 
   const deleteItem = (indexDelete) => {
-    setItems(items.filter((item, index) => index !== indexDelete));
+    setItems(items.filter((_, index) => index !== indexDelete));
+    setAnimatedIndexes(animatedIndexes.filter((i) => i !== indexDelete)); // Удаляем индекс анимации
   };
 
   const addItem = () => {
@@ -68,7 +84,11 @@ function ToDoList() {
           {items.map((item, index) => (
             <li
               key={index}
-              className="bg-slate-800 flex justify-between items-center p-4 rounded-lg shadow mt-3"
+              className={`bg-slate-800 flex justify-between items-center p-4 rounded-lg shadow mt-3 ${
+                animatedIndexes.includes(index)
+                  ? "border-green-700 border-4"
+                  : ""
+              }`}
             >
               <span className="flex items-center space-x-3">
                 {isEditing === index ? (
@@ -83,9 +103,7 @@ function ToDoList() {
                 )}
               </span>
               <span className="flex space-x-3">
-                <button onClick={FollowChange}>
-                   ⭐
-                </button>
+                <button onClick={() => toggleAnimation(index)}>⭐</button>
 
                 {isEditing === index ? (
                   <button
