@@ -5,30 +5,29 @@ function ToDoList() {
   const [items, setItems] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
-  const [animatedIndexes, setAnimatedIndexes] = useState([]); // Хранит индексы элементов, которые должны анимироваться
+  const [animatedIndexes, setAnimatedIndexes] = useState([]); 
 
   const toggleAnimation = (index) => {
-    // Проверяем, есть ли уже элемент в массиве анимации
     if (!animatedIndexes.includes(index)) {
-      setAnimatedIndexes((prev) => [...prev, index]); // Добавляем индекс в массив
+      setAnimatedIndexes((prev) => [...prev, index]); 
     }
     moveItemsToTop(index);
   };
 
   const moveItemsToTop = () => {
-    // Создаем массив только из элементов, которые находятся в массиве animatedIndexes
+
     const animatedItems = animatedIndexes.map((i) => items[i]);
-    // Создаем массив из остальных элементов, которые не анимируются
+
     const nonAnimatedItems = items.filter(
       (_, i) => !animatedIndexes.includes(i)
     );
-    // Объединяем анимированные элементы (вверху) с не анимированными
+
     setItems([...animatedItems, ...nonAnimatedItems]);
   };
 
   const deleteItem = (indexDelete) => {
     setItems(items.filter((_, index) => index !== indexDelete));
-    setAnimatedIndexes(animatedIndexes.filter((i) => i !== indexDelete)); // Удаляем индекс анимации
+    setAnimatedIndexes(animatedIndexes.filter((i) => i !== indexDelete)); 
   };
 
   const addItem = () => {
