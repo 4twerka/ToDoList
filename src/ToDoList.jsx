@@ -5,7 +5,6 @@ function ToDoList() {
   const [items, setItems] = useState([]);
   const [isEditing, setIsEditing] = useState(null);
   const [editValue, setEditValue] = useState("");
-  const [animatedIndexes, setAnimatedIndexes] = useState([]);
 
   useEffect(() => {
     const storedItems = localStorage.getItem("todos");
@@ -19,17 +18,13 @@ function ToDoList() {
   }, []);
 
   useEffect(() => {
-    if (items.length > 0) {
-      localStorage.setItem("todos", JSON.stringify(items));
-    } else {
-      localStorage.removeItem("todos"); 
-    }
+    localStorage.setItem("todos", JSON.stringify(items));
   }, [items]);
 
   const addItem = () => {
     if (inputValue.trim()) {
-      const newItems = [...items, inputValue];
-      setItems(newItems);
+      const newItem = { text: inputValue, favorite: false };
+      setItems([...items, newItem]);
       setInputValue("");
     }
   };
@@ -37,29 +32,26 @@ function ToDoList() {
   const deleteItem = (indexDelete) => {
     const updatedItems = items.filter((_, index) => index !== indexDelete);
     setItems(updatedItems);
-    setAnimatedIndexes(animatedIndexes.filter((i) => i !== indexDelete));
   };
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
   };
 
-  const toggleAnimation = (index) => {
-    if (!animatedIndexes.includes(index)) {
-      setAnimatedIndexes((prev) => [...prev, index]);
-    }
-    moveItemsToTop(index);
-  };
+  const toggleFavorite = (index) => {
+    const updatedItems = items.map((item, i) => 
+      i === index ? { ...item, favorite: !item.favorite } : item
+    );
 
-  const moveItemsToTop = () => {
-    const animatedItems = animatedIndexes.map((i) => items[i]);
-    const nonAnimatedItems = items.filter((_, i) => !animatedIndexes.includes(i));
-    setItems([...animatedItems, ...nonAnimatedItems]);
+    // Переміщуємо улюблені завдання наверх
+    updatedItems.sort((a, b) => b.favorite - a.favorite);
+    
+    setItems(updatedItems);
   };
 
   const handleEditClick = (index) => {
     setIsEditing(index);
-    setEditValue(items[index]);
+    setEditValue(items[index].text);
   };
 
   const handleEditChange = (e) => {
@@ -67,7 +59,9 @@ function ToDoList() {
   };
 
   const saveEdit = (index) => {
-    const updatedItems = items.map((item, i) => (i === index ? editValue : item));
+    const updatedItems = items.map((item, i) => 
+      i === index ? { ...item, text: editValue } : item
+    );
     setItems(updatedItems);
     setIsEditing(null);
     setEditValue("");
@@ -101,7 +95,7 @@ function ToDoList() {
             <li
               key={index}
               className={`bg-slate-800 flex justify-between items-center p-4 rounded-lg shadow mt-3 ${
-                animatedIndexes.includes(index) ? "border-green-700 border-4" : ""
+                item.favorite ? "border-yellow-500 border-4" : ""
               }`}
             >
               <span className="flex items-center space-x-3">
@@ -113,12 +107,17 @@ function ToDoList() {
                     className="bg-slate-700 text-white px-2 py-1 rounded"
                   />
                 ) : (
-                  <span className="text-white">{item}</span>
+                  <span className="text-white">{item.text}</span>
                 )}
               </span>
 
               <span className="flex space-x-3">
-                <button onClick={() => toggleAnimation(index)}>⭐</button>
+                <button 
+                  onClick={() => toggleFavorite(index)}
+                  className={item.favorite ? "text-yellow-400" : "text-gray-400"}
+                >
+                  ⭐
+                </button>
                 {isEditing === index ? (
                   <button
                     onClick={() => saveEdit(index)}
