@@ -67,11 +67,10 @@ function ToDoList() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 bg-gradient-to-br">
       <div className="w-full max-w-2xl bg-gray-800 p-6 sm:p-8 rounded-lg shadow-lg">
         <h1 className="text-white text-3xl sm:text-5xl font-bold text-center mb-6">TODO LIST</h1>
 
-        {/* Input Section */}
         <div className="flex w-full">
           <input
             onChange={handleInputChange}
@@ -88,7 +87,6 @@ function ToDoList() {
           </button>
         </div>
 
-        {/* Todo List */}
         <div className="text-white text-lg sm:text-2xl mt-6 mb-3">My TODOS:</div>
         <ul className="w-full space-y-3">
           {items.map((item, index) => (
@@ -111,7 +109,6 @@ function ToDoList() {
                 )}
               </span>
 
-              {/* Buttons */}
               <span className="flex space-x-3">
                 <button 
                   onClick={() => toggleFavorite(index)}
